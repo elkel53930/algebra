@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e1b38c53092eeb19682fd659d89fe7c1828c68b3b9ee6c39cc976a94ea369c61
+-- hash: 28d695615d3c99a4a81ffc3196f056904ad92ab0817dda7c132cdbf43678752b
 
 name:           algebra
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , parsec
   exposed-modules:
       Derivative
       Lib
@@ -45,6 +46,7 @@ executable algebra-exe
   build-depends:
       algebra
     , base >=4.7 && <5
+    , parsec
   other-modules:
       Paths_algebra
   default-language: Haskell2010
@@ -58,6 +60,7 @@ test-suite algebra-test
   build-depends:
       algebra
     , base >=4.7 && <5
+    , parsec
   other-modules:
       Paths_algebra
   default-language: Haskell2010

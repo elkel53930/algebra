@@ -1,11 +1,20 @@
 module Derivative where
 
+import Text.ParserCombinators.Parsec
+
 data Expression = Number Double
                 | Variable Symbol
                 | Sum Expression Expression
                 | Product Expression Expression deriving(Eq, Show)
 
 type Symbol = String
+
+derivExp :: String -> Symbol ->  Either String Expression
+derivExp src s =
+  let result = parse pExpression "" src
+  in  case result of
+        Right exp -> Right $ deriv exp s
+        Left  err -> Left $ show err
 
 deriv :: Expression -> Symbol -> Expression
 deriv (Number _) _ = Number 0
@@ -48,3 +57,39 @@ simplify e@(Product e1 e2) =
     (Number x1, Number x2) -> Number $ x1*x2
     otherwise -> e
 simplify e = e
+
+pExpression :: Parser Expression
+pExpression =   try pNumber
+            <|> try pVariable
+            <|> try pSum
+            <|> try pProduct
+
+pNumber :: Parser Expression
+pNumber = do
+  intPart <- many1 digit
+  char '.'
+  decPart <- many1 digit
+  return . Number $ read (intPart ++ "." ++ decPart)
+
+pVariable :: Parser Expression
+pVariable = do
+  s <- many1 $ letter <|> char '_'
+  return $ Variable s
+
+pSum :: Parser Expression
+pSum = do
+  char '('
+  e1 <- pExpression
+  char '+'
+  e2 <- pExpression
+  char ')'
+  return $ Sum e1 e2
+
+pProduct :: Parser Expression
+pProduct = do
+  char '('
+  e1 <- pExpression
+  char '*'
+  e2 <- pExpression
+  char ')'
+  return $ Product e1 e2
