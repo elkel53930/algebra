@@ -37,3 +37,14 @@ isZero (Number x) = x == 0
 isZero (Variable _) = False
 isZero (Sum e1 e2) = (isZero e1) && (isZero e2)
 isZero (Product e1 e2) = (isZero e1) || (isZero e2)
+
+simplify :: Expression -> Expression
+simplify e@(Sum e1 e2) =
+  case (simplify e1, simplify e2) of
+    (Number x1, Number x2) -> Number $ x1+x2
+    otherwise -> e
+simplify e@(Product e1 e2) =
+  case (simplify e1, simplify e2) of
+    (Number x1, Number x2) -> Number $ x1*x2
+    otherwise -> e
+simplify e = e
