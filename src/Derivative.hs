@@ -67,9 +67,11 @@ pExpression =   try pNumber
 pNumber :: Parser Expression
 pNumber = do
   intPart <- many1 digit
-  char '.'
-  decPart <- many1 digit
-  return . Number $ read (intPart ++ "." ++ decPart)
+  decPart <- option "" $ do
+    char '.'
+    decPart <- many1 digit
+    return $ '.' : decPart
+  return . Number $ read (intPart ++ decPart)
 
 pVariable :: Parser Expression
 pVariable = do
