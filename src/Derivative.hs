@@ -9,11 +9,11 @@ data Expression = Number Double
 
 type Symbol = String
 
-derivExp :: String -> Symbol ->  Either String Expression
+derivExp :: String -> Symbol ->  Either String String
 derivExp src s =
   let result = parse pExpression "" src
   in  case result of
-        Right exp -> Right $ deriv exp s
+        Right exp -> Right . oExpression $ deriv exp s
         Left  err -> Left $ show err
 
 deriv :: Expression -> Symbol -> Expression
@@ -93,3 +93,9 @@ pProduct = do
   e2 <- pExpression
   char ')'
   return $ Product e1 e2
+
+oExpression :: Expression -> String
+oExpression (Number x) = show x
+oExpression (Variable s) = s
+oExpression (Sum e1 e2) = concat["(", oExpression e1, "+", oExpression e2, ")" ]
+oExpression (Product e1 e2) = concat["(", oExpression e1, "*", oExpression e2, ")" ]
