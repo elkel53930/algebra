@@ -9,8 +9,8 @@ data Expression = Number Double
 
 type Symbol = String
 
-derivExp :: String -> Symbol ->  Either String String
-derivExp src s =
+derivExp :: Symbol -> String ->  Either String String
+derivExp s src =
   let result = parse pExpression "" src
   in  case result of
         Right exp -> Right . oExpression . simplify $ deriv exp s
